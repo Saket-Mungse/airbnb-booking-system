@@ -1,0 +1,14 @@
+package com.saketmungsemajorproject.Airbnb.App.dto;
+
+import com.saketmungsemajorproject.Airbnb.App.entity.HotelContactInfo;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+public class HotelInfoDto {
+    private HotelDto hotel;
+    private List<RoomDto> rooms;
+}

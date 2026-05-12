@@ -1,0 +1,11 @@
+Step1) Start Docker Container (my-postgres)
+Step2) And Run The Application
+
+
+Important Point:-
+Problem Faced:-
+1)In Dbeaver Timezone problem
+Solution:   1)Change TimeZone In Dbeaver to Asia/Kolkata
+            2)On the left side of run (three dots) click on edit and click on + button add an application
+            then name it and click on modify options and VM and paste this(-Duser.timezone=Asia/Kolkata)
+            and click apply.

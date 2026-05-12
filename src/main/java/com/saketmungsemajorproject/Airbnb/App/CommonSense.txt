@@ -1,0 +1,7 @@
+1)Entity => Class becomes a db table
+2)@Id => Primary Key
+3)@GeneratedValue => db automatically create it
+4)GenerationType.IDENTITY => Uses AUTO_INCREMENT
+5)@Transcational => Hibernate tracks entity changes which is called dirty checking
+                    Hibernate remember original object state
+                    when transaction end if the object change hibernate automatically runs update query
