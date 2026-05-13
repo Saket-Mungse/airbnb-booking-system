@@ -1,6 +1,7 @@
 package com.saketmungsemajorproject.Airbnb.App.controller;
 
 import com.saketmungsemajorproject.Airbnb.App.dto.HotelInfoDto;
+import com.saketmungsemajorproject.Airbnb.App.dto.HotelMinPriceDto;
 import com.saketmungsemajorproject.Airbnb.App.dto.HotelSearchRequest;
 import com.saketmungsemajorproject.Airbnb.App.dto.HotelDto;
 import com.saketmungsemajorproject.Airbnb.App.service.HotelService;
@@ -29,8 +30,8 @@ public class HotelBrowseController {
     //6)Get the response by unique hotels
 
     @GetMapping("/search")
-    public ResponseEntity<Page<HotelDto>> searchHotels(@RequestBody HotelSearchRequest hotelSearchRequest){
-        Page<HotelDto> page = inventoryService.searchHotels(hotelSearchRequest);
+    public ResponseEntity<Page<HotelMinPriceDto>> searchHotels(@RequestBody HotelSearchRequest hotelSearchRequest){
+        Page<HotelMinPriceDto> page = inventoryService.searchHotels(hotelSearchRequest);
         return ResponseEntity.ok(page);
     }
 
