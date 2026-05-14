@@ -6,11 +6,13 @@ import com.saketmungsemajorproject.Airbnb.App.dto.GuestDto;
 import com.saketmungsemajorproject.Airbnb.App.entity.*;
 import com.saketmungsemajorproject.Airbnb.App.entity.enums.BookingStatus;
 import com.saketmungsemajorproject.Airbnb.App.exception.ResourceNotFoundException;
+import com.saketmungsemajorproject.Airbnb.App.exception.UnAuthorisedException;
 import com.saketmungsemajorproject.Airbnb.App.repository.*;
 import com.saketmungsemajorproject.Airbnb.App.service.BookingService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -81,6 +83,10 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto addGuests(Long bookingId, List<GuestDto> guestDtoList) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(()->new ResourceNotFoundException("Booking not found with id "+bookingId));
+        User user = getCurrentUser();
+        if(!user.equals(booking.getUser())){
+            throw new UnAuthorisedException("Booking does not belong to this user with id: "+user.getId());
+        }
 
         if(hasBookingExpired(booking)){
             throw new IllegalStateException("Booking has expired");
@@ -108,8 +114,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     public User getCurrentUser(){
-        User user  = new User();
-        user.setId(1L);//TODO : Romove Dummy User
-        return user;
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
