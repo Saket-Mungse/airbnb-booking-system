@@ -37,14 +37,15 @@ public class AuthService {
         }
 
         User newUser = modelMapper.map(signUpRequestDto, User.class);
-        newUser.setRoles(Set.of(Role.GUEST));
-        newUser.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
+        newUser.setRoles(Set.of(Role.GUEST));//All new users are guest by default
+        newUser.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));//BCrypt hash, can't be reversed
         newUser = userRepository.save(newUser);
 
         return modelMapper.map(newUser, UserDto.class);
     }
 
     public String[] login(LoginDto loginDto) {
+        //Spring security verifies email+password against database
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(), loginDto.getPassword()
         ));
@@ -52,8 +53,12 @@ public class AuthService {
         User user = (User) authentication.getPrincipal();
 
         String[] arr = new String[2];
-        arr[0] = jwtService.generateAccessToken(user);
-        arr[1] = jwtService.generateRefreshToken(user);
+        arr[0] = jwtService.generateAccessToken(user);//Expire in 10 mins
+        arr[1] = jwtService.generateRefreshToken(user);// Expire in 6 months
+
+        //Access token sent in response body(Contains user info)
+        //Refresh token Stored in Http Cookie-Client can't access via JS(Contains only user id)
+
 
         return arr;
     }

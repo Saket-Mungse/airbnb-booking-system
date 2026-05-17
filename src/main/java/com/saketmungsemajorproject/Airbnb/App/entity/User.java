@@ -1,6 +1,7 @@
 package com.saketmungsemajorproject.Airbnb.App.entity;
 
 
+import com.saketmungsemajorproject.Airbnb.App.entity.enums.Gender;
 import com.saketmungsemajorproject.Airbnb.App.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -32,6 +34,11 @@ public class User implements UserDetails {
     private String password;
 
     private String name;
+
+    private LocalDate dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)

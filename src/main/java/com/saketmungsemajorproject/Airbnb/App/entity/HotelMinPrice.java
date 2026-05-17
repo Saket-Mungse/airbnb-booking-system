@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class HotelMinPrice {
+//This table we use for search optimization. It Stores the cheapest room price per hotel per day
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +31,7 @@ public class HotelMinPrice {
     private LocalDate date;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal minPrice; //cheapest room price on a particular day
+    private BigDecimal minPrice; //cheapest room price on a particular day for the hotel
 
     @CreationTimestamp
     private LocalDateTime createdAt;

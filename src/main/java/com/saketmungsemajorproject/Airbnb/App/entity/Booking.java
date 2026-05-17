@@ -33,10 +33,10 @@ public class Booking {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User user;//Who made the booking
 
     @Column(nullable = false)
-    private Integer roomsCount;
+    private Integer roomsCount;//How many rooms booked
 
     @Column(nullable = false)
     private LocalDate checkInDate;
@@ -108,7 +108,10 @@ public class Booking {
     private Set<Guest> guests;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal amount;
+    private BigDecimal amount;//total final price
+
+    @Column(unique = true)
+    private String paymentSessionId;
 
 }
 

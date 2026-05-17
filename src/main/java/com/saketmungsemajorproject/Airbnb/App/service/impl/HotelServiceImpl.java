@@ -20,6 +20,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.saketmungsemajorproject.Airbnb.App.utils.AppUtils.getCurrentUser;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +39,7 @@ public class HotelServiceImpl implements HotelService {
         Hotel newHotel = modelMapper.map(hotelDto, Hotel.class);
         newHotel.setActive(false);//we are just added this hotel in our website, no one is booked until it now
 
+        //Get currently logged-in user from spring security
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         newHotel.setOwner(user);
 
@@ -99,11 +103,14 @@ public class HotelServiceImpl implements HotelService {
                 .orElseThrow(()->new ResourceNotFoundException("Hotel with Id "+id+" not found"));
         hotel.setActive(true);
 
+        //Security Check: Only the hotel's owner can activate it
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if(!user.equals(hotel.getOwner())){
             throw new UnAuthorisedException("This user does not own this hotel with id: "+id);
         }
 
+        //For every roomType in this hotel, create 365 inventory records as for each date
+        //If hotel has 2 room types -> 2*365 = 730 inventory rows created
         //assuming only do it once
         for(Room room:hotel.getRooms()){
             inventoryService.initializeRoomForAYear(room);
@@ -120,6 +127,18 @@ public class HotelServiceImpl implements HotelService {
                 map((element) -> modelMapper.map(element, RoomDto.class))
                 .toList();
         return new HotelInfoDto(modelMapper.map(hotel, HotelDto.class),rooms);
+    }
+
+    @Override
+    public List<HotelDto> getAllHotels() {
+        User user = getCurrentUser();
+        log.info("Getting all hotels for the admin user with ID: {}", user.getId());
+        List<Hotel> hotels = hotelRepository.findByOwner(user);
+
+        return hotels
+                .stream()
+                .map((element) -> modelMapper.map(element, HotelDto.class))
+                .collect(Collectors.toList());
     }
 
 

@@ -75,7 +75,7 @@ public class PricingUpdateService {
 
     private void updateHotelMinPrice(Hotel hotel, List<Inventory> inventoryList, LocalDate startDate, LocalDate endDate) {
         log.info("Setting the hotel price to minimum for search page with hotelId: {}", hotel.getId());
-        // Compute minimum price per day for the hotel
+        //Find the cheapest room per day across all room types
         Map<LocalDate, BigDecimal> dailyMinPrices = inventoryList.stream()
                 .collect(Collectors.groupingBy(
                         Inventory::getDate,

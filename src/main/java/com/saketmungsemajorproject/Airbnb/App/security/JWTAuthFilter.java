@@ -34,10 +34,15 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
+    //This runs on every single HTTP request before it reaches the controller
+    //The Security Gatekeeper
         try {
+            //Step 1: Check for Authorization header
             final String requestTokenHeader = request.getHeader("Authorization");
+            //Expected: "Bearer eyJhbGci..."
             if (requestTokenHeader == null || !requestTokenHeader.startsWith("Bearer")) {
+                // Let the request through WITHOUT authentication
+                // Public endpoints (/auth/signup, /auth/login, /hotels/search) will still work
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -45,7 +50,9 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             String token = requestTokenHeader.split("Bearer ")[1];
             Long userId = jwtService.getUserIdFromToken(token);
 
+            //Load user from DB and set in SecurityContext
             if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                                  //No exist authentication
                 User user = userService.getUserById(userId);
                 // check if the user should be allowed
                 UsernamePasswordAuthenticationToken authenticationToken =
@@ -54,8 +61,9 @@ public class JWTAuthFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                //Now Spring Security Knows who this user is for this request
             }
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);//Continue to controller
         } catch (JwtException ex) {
             handlerExceptionResolver.resolveException(request, response, null, ex);
         }

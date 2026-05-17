@@ -30,7 +30,7 @@ public class Room {
     private String type;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal basePrice;
+    private BigDecimal basePrice;//Base Price before dynamic pricing
 
     @Column(columnDefinition = "TEXT[]")
     private String[] photos;
@@ -39,10 +39,10 @@ public class Room {
     private String[] amenities;
 
     @Column(nullable = false)
-    private Integer totalCount;
+    private Integer totalCount;//How many rooms of the same type exists
 
     @Column(nullable = false)
-    private Integer capacity;
+    private Integer capacity;//Max people per room
 
     @CreationTimestamp
     @Column(updatable = false)

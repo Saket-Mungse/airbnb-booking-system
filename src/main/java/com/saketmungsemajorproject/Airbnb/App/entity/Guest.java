@@ -16,7 +16,7 @@ public class Guest {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user;//Which user this guest belong to(Means who added this guest in booking)
 
     @Column(nullable = false)
     private String name;
