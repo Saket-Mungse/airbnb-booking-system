@@ -75,6 +75,8 @@ public class HotelServiceImpl implements HotelService {
         //The Hoteldto does not contain the id so it will become null
         //so we have to set the id before responding
         //if we do not set the id then it will return the id as null which throw the error
+        modelMapper.getConfiguration()
+                .setSkipNullEnabled(true);
         modelMapper.map(hotelDto,hotel);
         hotel.setId(id);
         hotel = hotelRepository.save(hotel);

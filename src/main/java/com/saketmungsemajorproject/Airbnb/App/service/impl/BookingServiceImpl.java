@@ -130,7 +130,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public String initiatePayment(Long bookingId) {
-
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(()-> new ResourceNotFoundException("Booking not found with id: "+bookingId));
 

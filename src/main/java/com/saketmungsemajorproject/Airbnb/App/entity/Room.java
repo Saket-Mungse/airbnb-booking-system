@@ -20,6 +20,18 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore//we did it for frontend for search hotel page
+    //Reason:-
+//    What was actually happening on the backend
+//    Your Room entity has a field pointing back to Hotel:
+//    javaprivate Hotel hotel;
+//    And your Hotel entity has a list pointing to all its Rooms:
+//    javaprivate List<Room> rooms;
+//    When Spring Boot converts a Hotel object into JSON text to send to the browser, it has to write out every field. So it writes:
+//    Hotel → { rooms: [ Room → { hotel: { rooms: [ Room → { hotel: { rooms: [...
+//    This never stops. The Hotel contains the Room, which contains the Hotel again, which contains the Room again — forever. This is called a circular reference.
+
+
     @ManyToOne(fetch = FetchType.LAZY)//we do not need hotel info when we are fetching Room
     //👉 "Many rooms can belong to one hotel, and a foreign key hotel_id is created in the Room table to maintain this relationship."
     //hotel_id refers to the primary key of the Hotel table

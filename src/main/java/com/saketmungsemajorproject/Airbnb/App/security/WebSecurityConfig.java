@@ -15,7 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -30,11 +35,13 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-    //Who can access what
+    // Who can access what
 
         httpSecurity
+                .cors(corsConfig -> corsConfig.configurationSource(corsConfigurationSource()))
                 .csrf(csrfConfig -> csrfConfig.disable())
-                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sessionConfig -> sessionConfig
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/**").hasRole("HOTEL_MANAGER")
@@ -42,9 +49,30 @@ public class WebSecurityConfig {
                         .requestMatchers("/users/**").authenticated()
                         .anyRequest().permitAll()
                 )
-                .exceptionHandling(exHandlingConfig -> exHandlingConfig.accessDeniedHandler(accessDeniedHandler()));
+                .exceptionHandling(ex -> ex.accessDeniedHandler(accessDeniedHandler()));
 
         return httpSecurity.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+
+        // Allow React app
+        config.setAllowedOrigins(List.of("http://localhost:5173"));
+
+        // Allow all methods
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+
+        // Allow all headers
+        config.setAllowedHeaders(List.of("*"));
+
+        // Allow cookies (needed for refresh token)
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
     @Bean
@@ -63,5 +91,4 @@ public class WebSecurityConfig {
             handlerExceptionResolver.resolveException(request, response, null, accessDeniedException);
         };
     }
-
 }

@@ -30,10 +30,10 @@ public class RoomAdminController {
         return ResponseEntity.ok(roomService.getRoomById(roomId)) ;
     }
 
-    @PutMapping("/{roomId}")
-    public ResponseEntity<RoomDto> updateExistingRoom(@PathVariable Long roomId, @RequestBody RoomDto roomDto) {
-        return ResponseEntity.ok(roomService.updateExistingRoom(roomId,roomDto));
-    }
+//    @PutMapping("/{roomId}")
+//    public ResponseEntity<RoomDto> updateExistingRoom(@PathVariable Long roomId, @RequestBody RoomDto roomDto) {
+//        return ResponseEntity.ok(roomService.updateExistingRoom(roomId,roomDto));
+//    }
 
     @DeleteMapping("/{roomId}")
     public ResponseEntity<Void> softDeleteRoom(@PathVariable Long hotelId, @PathVariable Long roomId) {

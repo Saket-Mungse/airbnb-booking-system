@@ -152,7 +152,7 @@ public interface InventoryRepository extends JpaRepository<Inventory,Long> {
 
 
     @Query("""
-       SELECT new com.codingshuttle.projects.airBnbApp.dto.RoomPriceDto(
+       SELECT new com.saketmungsemajorproject.Airbnb.App.dto.RoomPriceDto(
             i.room,
             CASE
                 WHEN COUNT(i) = :dateCount THEN AVG(i.price)

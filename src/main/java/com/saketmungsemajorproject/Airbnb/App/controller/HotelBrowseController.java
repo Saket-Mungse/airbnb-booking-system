@@ -35,6 +35,16 @@ public class HotelBrowseController {
         return ResponseEntity.ok(page);
     }
 
+    //We add the same search hotel function as the upper
+    //The reason is because in the frontend the axios is dropping the get request body so we are not able to see the body in frontend
+    //But in the postman it is totally working(GET request for search hotel)
+    @PostMapping("/search")
+    public ResponseEntity<Page<HotelMinPriceDto>> searchHotelsPost(
+            @RequestBody HotelSearchRequest hotelSearchRequest) {
+        Page<HotelMinPriceDto> page = inventoryService.searchHotels(hotelSearchRequest);
+        return ResponseEntity.ok(page);
+    }
+
     @GetMapping("/{hotelId}/info")
     public ResponseEntity<HotelInfoDto> getHotelInfo(@PathVariable Long hotelId){
         return ResponseEntity.ok(hotelService.getHotelInfoById(hotelId));
